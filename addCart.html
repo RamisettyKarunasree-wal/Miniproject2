@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>E-Commerce Site</title>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width">
+</head>
+<style>
+    .container {
+        margin-top: 2%;
+        margin-bottom: 2%;
+    }
+
+    #total_div {
+        display: flex;
+        padding: 3px;
+        width: 60%;
+        margin: 20px auto;
+        background-color: honeydew;
+        border-radius: 15px;
+
+    }
+
+    #right_div {
+        font-weight: bold;
+        margin: auto;
+    }
+
+    body {
+        background: linear-gradient(270deg, rgb(241, 204, 210), rgb(187, 214, 187), rgb(151, 151, 206));
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        background-size: cover;
+    }
+
+    h1 {
+        color: black;
+        text-shadow: 2px 2px grey;
+        margin-bottom: 2%;
+        font-weight: bold;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        margin-top: 4px;
+    }
+
+    img {
+        width: 200px;
+        height: 200px;
+        border-radius: 15px;
+        border: 1px solid black;
+    }
+
+    article {
+        box-shadow: 4px 4px 2px grey;
+        background: white;
+        text-align: center;
+        border-radius: 15px;
+        padding: 2px;
+        margin-bottom: 4%;
+        margin-top: 4%;
+        width: 300px;
+    }
+
+    button {
+        margin: 3px 0;
+        font-weight: bold;
+        border-radius: 50px;
+    }
+
+
+    .top-menu {
+        text-align: center;
+        background: rgb(49, 48, 48);
+        padding: 3px;
+        border-radius: 50px;
+        margin: auto;
+    }
+
+    .top-menu a i {
+        border-radius: 50%;
+        font-size: 24px;
+    }
+
+    .top-menu a {
+        width: 100%;
+        padding: 2px;
+        text-decoration: none;
+        color: rgb(242, 247, 247);
+        display: inline-block;
+        border-radius: 50px;
+    }
+
+    .top-menu a:hover {
+        border: 2px solid wheat;
+    }
+
+    i {
+        font-size: 24px;
+    }
+
+    #no_items,
+    #total-price {
+        color: black;
+        font-style: italic;
+        text-align: center;
+        padding: 3px;
+        width: fit-content;
+        border-radius: 100px;
+        border: 2px solid white;
+        background-color: violet;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    #cart-notification {
+        background: red;
+        padding: 1px 6px;
+        font-size: 15px;
+        color: white;
+        margin-left: 2px;
+    }
+</style>
+
+<body>
+    <div class="container" id="mainBody">
+        <header class="row top-menu text-center">
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="index.html">All Cars</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="registration.html">Add Car</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="#">My Orders</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="#">Filters</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="#">Category</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="addCart.html" class="cart-sym">My Cart<i
+                        class="fa fa-shopping-cart"></i><i id="cart-notification"> </i></a></div>
+        </header>
+        <h1 class="text-center">Items in Cart</h1>
+
+    </div>
+    <script>
+        let dbarr = JSON.parse(localStorage.getItem('Cart_Items'));
+        document.getElementById('cart-notification').textContent = dbarr.length;
+        function add(p, cid) {
+            p.textContent = parseInt(p.textContent) + 1;
+            let array = JSON.parse(localStorage.getItem('Cart_Items'));
+            for (let i in array) {
+                if (array[i].Car_Id == cid) {
+                    array[i].Quantity = p.textContent;
+                }
+            }
+            let marr = JSON.stringify(array);
+            localStorage.setItem('Cart_Items', marr);
+            location.reload();
+        }
+        function sub(p, cid) {
+            if (p.textContent == '1') {
+                p.textContent = 1;
+            }
+            else {
+                p.textContent = parseInt(p.textContent) - 1;
+            }
+            let array = JSON.parse(localStorage.getItem('Cart_Items'));
+
+            for (let i in array) {
+                if (array[i].Car_Id == cid) {
+                    array[i].Quantity = p.textContent;
+                }
+            }
+            let marr = JSON.stringify(array);
+            localStorage.setItem('Cart_Items', marr);
+            location.reload();
+        }
+        function removeItem(cid) {
+            let jarr = localStorage.getItem('Cart_Items');
+            let parr = JSON.parse(jarr);
+            let Modifiedarr = []
+            for (let i in parr) {
+                if (parr[i].Car_Id == cid) {
+                    continue;
+                }
+                else {
+                    Modifiedarr.push(parr[i]);
+                }
+            }
+            let Jarr = JSON.stringify(Modifiedarr);
+            localStorage.setItem('Cart_Items', Jarr);
+            location.reload();
+        }
+        let jsonarr = localStorage.getItem('Cart_Items');
+        let main_body = document.getElementById('mainBody');
+        if (jsonarr == null || jsonarr == "[]") {
+            let no_items = document.createElement("div");
+            no_items.textContent = "No Items Added";
+            no_items.setAttribute('id', 'no_items');
+            main_body.appendChild(no_items);
+
+        }
+        else {
+            let arr = JSON.parse(jsonarr);
+            for (let i in arr) {
+                let image = arr[i].Car_Image;
+                let model = arr[i].Car_Model;
+                let price = arr[i].Car_Cost;
+                let carid = arr[i].Car_Id;
+                let carcolor = arr[i].Car_Color;
+                let q = arr[i].Quantity;
+                let left_div = document.createElement("div");
+                left_div.setAttribute('id', 'left_div');
+                let image_tag = document.createElement("img");
+                let right_div = document.createElement("div");
+                right_div.setAttribute('id', 'right_div');
+                let model_tag = document.createElement("div");
+                let price_tag = document.createElement("div");
+                let id_tag = document.createElement("div");
+                let color_tag = document.createElement("div");
+                let button_tag = document.createElement("button");
+                image_tag.src = image;
+                model_tag.textContent = model;
+                price_tag.textContent = price;
+                id_tag.textContent = carid;
+                color_tag.textContent = carcolor;
+                button_tag.textContent = `Remove Item`;
+                button_tag.style.backgroundColor = "red";
+                button_tag.onclick = function () { removeItem(carid) };
+                left_div.appendChild(image_tag);
+                right_div.appendChild(model_tag);
+                right_div.appendChild(price_tag);
+                right_div.appendChild(id_tag);
+                right_div.appendChild(color_tag);
+                right_div.appendChild(button_tag);
+                let quantity_tag = document.createElement("div");
+                quantity_tag.setAttribute('id', 'quantity-tag');
+                let quan_content = document.createElement('b');
+                quan_content.textContent = q;
+                let increment = document.createElement("button");
+                increment.textContent = '+';
+                increment.onclick = function () { add(quan_content, carid) };
+                let decrement = document.createElement("button");
+                decrement.textContent = '-';
+                decrement.onclick = function () { sub(quan_content, carid) };
+                let quan = document.createElement('b');
+                quan.textContent = `Quantity : `
+                quantity_tag.appendChild(decrement);
+                quantity_tag.appendChild(quan);
+                quantity_tag.appendChild(quan_content);
+                quantity_tag.appendChild(increment);
+                right_div.appendChild(quantity_tag);
+                let t_div = document.createElement("div");
+                t_div.setAttribute('id', 'total_div');
+                t_div.appendChild(left_div);
+                t_div.appendChild(right_div);
+                main_body.appendChild(t_div);
+            }
+            function retnum(str) {
+                var num = str.replace(/[^0-9]/g, '');
+                return parseInt(num, 10);
+            }
+            let sum = 0;
+            for (let i in arr) {
+                let cost = retnum(arr[i].Car_Cost);
+                let q = arr[i].Quantity;
+
+
+                cost = parseInt(cost) * q;
+                sum += parseInt(cost);
+            }
+
+            let total = document.createElement('div');
+            total.setAttribute('id', 'total-price');
+            total.textContent = `Total Cart Price : ${sum}$`;
+            main_body.appendChild(total);
+        }
+
+
+    </script>
+</body>
+
+</html>

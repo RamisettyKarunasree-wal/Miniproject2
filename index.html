@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Available cars</title>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width">
+    <style>
+        #details {
+            margin: auto;
+        }
+
+        body {
+            background: linear-gradient(45deg, pink, rgb(165, 190, 165), rgb(233, 233, 172), rgb(231, 209, 167), rgb(228, 197, 197), rgb(186, 186, 211), rgb(204, 180, 204), rgb(182, 159, 182));
+            background-size: 100% 100%;
+        }
+
+        img {
+            width: 100%;
+            height: 250px;
+            border-radius: 5px;
+        }
+
+        h1 {
+            font-family: monospace;
+            font-weight: bold;
+            text-shadow: 2px 2px 1px black;
+            color: chocolate;
+        }
+
+        .card {
+            padding: 10px;
+            box-shadow: 2px 2px black;
+            margin: 10px auto;
+            background: linear-gradient(45deg, rgb(172, 150, 154), rgb(155, 161, 219), rgb(161, 187, 161))
+        }
+
+        img:hover {
+            padding: 10px;
+            margin-bottom: 6px;
+        }
+
+        .car-details {
+            font-weight: bold;
+            margin: 2px;
+        }
+
+        .container {
+            border-radius: 40px;
+            background-size: 100% 100%;
+            margin: 10px auto;
+            padding: 10px;
+        }
+
+        .top-menu {
+            text-align: center;
+            background: rgb(49, 48, 48);
+            padding: 3px;
+            border-radius: 50px;
+            margin: auto;
+        }
+
+        .top-menu a i {
+            border-radius: 50%;
+            font-size: 24px;
+        }
+
+        .top-menu a {
+            width: 100%;
+            padding: 2px;
+            text-decoration: none;
+            color: rgb(242, 247, 247);
+            display: inline-block;
+            border-radius: 50px;
+        }
+
+        .top-menu a:hover {
+            border: 2px solid wheat;
+        }
+
+        i {
+            font-size: 24px;
+        }
+
+        #cart-notification {
+            background: red;
+            padding: 1px 6px;
+            font-size: 15px;
+            color: white;
+            margin-left: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Available Cars</h1>
+        <header class="row top-menu text-center">
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="index.html">All Cars</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="registration.html">Add Car</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="#">My Orders</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="#">Filters</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="#">Category</a></div>
+            <div class="col-md-4 col-lg-2 col-sm-6 text-center"><a href="addCart.html" class="cart-sym">My Cart<i
+                        class="fa fa-shopping-cart"></i><i id="cart-notification"> </i></a></div>
+        </header>
+        <div class="row" id="details">
+        </div>
+    </div>
+    <script src="http://www.color-blindness.com/color-name-hue-tool/js/ntc.js"></script>
+    <script>
+        let arr = JSON.parse(localStorage.getItem('All_Cars'));
+        let db_arr=JSON.parse(localStorage.getItem('Cart_Items'));
+        if(db_arr){
+            document.getElementById('cart-notification').textContent = db_arr.length;
+
+        }
+        else{
+        document.getElementById('cart-notification').textContent = 0;
+
+        }
+        let d_tag = document.getElementById('details');
+        for (let i in arr) {
+            d_tag.innerHTML += "<div class='col-lg-3 col-sm-6 col-md-4'><div class='card text-center'><img id='img" + i + "' src=" + arr[i].Car_Image + "><div id='model" + i + "' class='model" + i + " car-details carmodel'>" + arr[i].Car_Model + "</div><div id='cost" + i + "' class='cost" + i + " car-details carcost'>Cost Per day: " + arr[i].Car_Cost + "$</div><div id='id" + i + "' class='id" + i + " car-details carid'>Car Id: " + arr[i].Car_Id + "</div><div id='color" + i + "' class='color" + i + " car-details carcolor'>Car Color: " + ntc.name(arr[i].Car_Color)[1] + "</div><button onclick='addCart(id" + i + ")' class='btn" + i + " btn btn-success' id='btn" + i + "'>Add to Cart</button></div></div>";
+
+        }
+        if (localStorage.getItem('Cart_Items')) {
+            let dbarr = JSON.parse(localStorage.getItem('Cart_Items'));
+            let proname = document.querySelectorAll('.carid');
+            for (let i in dbarr) {
+                for (let j = 0; j < proname.length; j++) {
+                    if (dbarr[i].Car_Id == proname[j].textContent) {
+                        let n = retnum(proname[j].id);
+                        let btn_id = 'btn' + n;
+                        btn_id = document.getElementById(btn_id);
+                        btn_id.textContent = `Remove from Cart`;
+                        btn_id.style.backgroundColor = "blue";
+                    }
+                }
+            }
+        }
+        function retnum(str) {
+            var num = str.replace(/[^0-9]/g, '');
+            return parseInt(num, 10);
+        }
+        let cart_arr = [];
+        function addCart(cid) {
+            cid = retnum(cid.id);
+            let btn_txt = document.getElementById('btn' + cid).textContent;
+            if (btn_txt == `Add to Cart`) {
+                let car_obj = {
+                    Car_Image: document.getElementById('img' + cid).src,
+                    Car_Model: document.getElementById('model' + cid).textContent,
+                    Car_Color: document.getElementById('color' + cid).textContent,
+                    Car_Cost: document.getElementById('cost' + cid).textContent,
+                    Car_Id: document.getElementById('id' + cid).textContent,
+                    Quantity:1
+                }
+                if (localStorage.getItem('Cart_Items')) {
+                    let get_arr = JSON.parse(localStorage.getItem('Cart_Items'));
+                    get_arr.push(car_obj);
+                    localStorage.setItem('Cart_Items', JSON.stringify(get_arr));
+                }
+                else {
+                    cart_arr.push(car_obj);
+                    localStorage.setItem('Cart_Items', JSON.stringify(cart_arr));
+                }
+            }
+            else {
+                let rmv_arr = [];
+                let larr = JSON.parse(localStorage.getItem('Cart_Items'));
+                for (let i in larr) {
+                    if (larr[i].Car_Id == document.getElementById('id' + cid).textContent) {
+
+                        continue;
+                    }
+
+                    rmv_arr.push(larr[i]);
+                }
+                localStorage.setItem('Cart_Items', JSON.stringify(rmv_arr));
+            }
+
+            location.reload();
+        }
+    </script>
+</body>
+
+</html>
