@@ -100,16 +100,17 @@
 
     #no_items,
     #total-price {
-        color: black;
+        color: white;
         font-style: italic;
         text-align: center;
         padding: 3px;
         width: fit-content;
         border-radius: 100px;
         border: 2px solid white;
-        background-color: violet;
+        background-color: black;
         font-size: 24px;
         font-weight: 800;
+        margin: auto;
     }
 
     #cart-notification {
@@ -137,7 +138,12 @@
     </div>
     <script>
         let dbarr = JSON.parse(localStorage.getItem('Cart_Items'));
-        document.getElementById('cart-notification').textContent = dbarr.length;
+        if (dbarr) {
+            document.getElementById('cart-notification').textContent = dbarr.length;
+        }
+        else {
+            document.getElementById('cart-notification').textContent = 0;
+        }
         function add(p, cid) {
             p.textContent = parseInt(p.textContent) + 1;
             let array = JSON.parse(localStorage.getItem('Cart_Items'));
